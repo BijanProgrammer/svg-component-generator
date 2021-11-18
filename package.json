@@ -1,0 +1,17 @@
+{
+    "name": "svg-component-generator",
+    "version": "1.0.0",
+    "main": "src/main.ts",
+    "scripts": {
+        "start": "node src/main"
+    },
+    "keywords": [
+        "svg",
+        "icon"
+    ],
+    "author": "BijanProgrammer",
+    "license": "MIT",
+    "devDependencies": {
+        "prettier": "^2.4.1"
+    }
+}
