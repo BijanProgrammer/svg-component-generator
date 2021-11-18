@@ -1,9 +1,8 @@
 {
     "name": "svg-component-generator",
     "version": "1.0.0",
-    "main": "src/main.ts",
     "scripts": {
-        "start": "node src/main"
+        "start": "tsc & node dist/main"
     },
     "keywords": [
         "svg",
