@@ -15,6 +15,27 @@ export class ${titleCase(name)}Component {}
 `;
 };
 
+const generateModuleContent = (icons: Icon[]): string => {
+    const components = icons.map((x) => `${titleCase(x.name)}Component`);
+
+    const declarations = components.map((x) => `        ${x},`);
+    const imports = components.map((x, i) => `import {${x}} from './${icons[i].name}/${icons[i].name}.component';`);
+
+    return `import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+
+${imports.join('\n')}
+
+@NgModule({
+    declarations: [
+${declarations.join('\n')}
+    ],
+    imports: [CommonModule],
+})
+export class IconsModule {}
+`;
+};
+
 export const generateAngularComponents = async (outputDirectory: string, icons: Icon[]): Promise<void> => {
     const promises: Promise<any>[] = [];
 
@@ -36,5 +57,10 @@ export const generateAngularComponents = async (outputDirectory: string, icons: 
         promises.push(svgFilePromise, componentFilePromise);
     }
 
-    await Promise.all(promises);
+    const moduleFilePromise = fs.promises.writeFile(
+        path.join(outputDirectory, 'icons.module.ts'),
+        generateModuleContent(icons)
+    );
+
+    await Promise.all([...promises, moduleFilePromise]);
 };
