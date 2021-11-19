@@ -31,6 +31,9 @@ ${imports.join('\n')}
 ${declarations.join('\n')}
     ],
     imports: [CommonModule],
+    exports: [
+${declarations.join('\n')}
+    ],
 })
 export class IconsModule {}
 `;
