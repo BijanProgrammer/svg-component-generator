@@ -88,7 +88,6 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
 
 # Gatsby files
 .cache/
@@ -244,4 +243,5 @@ modules.xml
 
 # End of https://www.toptal.com/developers/gitignore/api/webstorm+all,visualstudiocode,node
 
-!dist/assets/
+dist/*
+!dist/assets
