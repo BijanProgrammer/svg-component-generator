@@ -1,4 +1,4 @@
-export interface Icon {
+export interface Svg {
     name: string;
     content: string;
 }
