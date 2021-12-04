@@ -46,6 +46,8 @@ const generateComponents = async (
     moduleFilename: string,
     moduleName: string
 ): Promise<Promise<any>[]> => {
+    if (!svgs || !svgs.length) return [];
+
     const promises: Promise<any>[] = [];
 
     for (const svg of svgs) {
@@ -77,7 +79,8 @@ const generateComponents = async (
 export const generateAngularComponents = async (
     outputDirectory: string,
     icons: Svg[],
-    illustrations: Svg[]
+    illustrations: Svg[],
+    logos: Svg[]
 ): Promise<void> => {
     console.log('removing components folder ...');
     await fs.promises.rmdir(outputDirectory, {recursive: true});
@@ -98,5 +101,13 @@ export const generateAngularComponents = async (
         'IllustrationsModule'
     );
 
-    await Promise.all([...iconPromises, ...illustrationPromises]);
+    const logoPromises = await generateComponents(
+        path.join(outputDirectory, 'logos'),
+        logos,
+        'icon',
+        'icons.module.ts',
+        'IconsModule'
+    );
+
+    await Promise.all([...iconPromises, ...illustrationPromises, ...logoPromises]);
 };
