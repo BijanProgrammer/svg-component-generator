@@ -9,7 +9,7 @@ import {printSeparator} from './utils/console.utils';
 
 const ASSETS_PATH = './assets/';
 const COMPONENTS_PATH = './components/';
-const PROJECT = 'storybook';
+const PROJECT = 'css-animations';
 
 const ICONS_PATH = path.join(ASSETS_PATH, PROJECT, 'icons/');
 const ILLUSTRATIONS_PATH = path.join(ASSETS_PATH, PROJECT, 'illustrations/');
@@ -22,20 +22,27 @@ let illustrations: Svg[] = [];
 let logos: Svg[] = [];
 
 const loadSvgs = async (svgsPath: string): Promise<Svg[]> => {
-    const filenames = await fs.promises.readdir(svgsPath);
-    const svgs: Svg[] = [];
+    try {
+        const filenames = await fs.promises.readdir(svgsPath);
+        const svgs: Svg[] = [];
 
-    for (const filename of filenames) {
-        const fullPath = path.join(svgsPath, filename);
+        for (const filename of filenames) {
+            const fullPath = path.join(svgsPath, filename);
 
-        const {name, ext: extension} = path.parse(fullPath);
-        if (extension !== '.svg') continue;
+            const {name, ext: extension} = path.parse(fullPath);
+            if (extension !== '.svg') continue;
 
-        const content = await fs.promises.readFile(fullPath, 'utf8');
-        svgs.push({name, content});
+            const content = await fs.promises.readFile(fullPath, 'utf8');
+            svgs.push({
+                name,
+                content,
+            });
+        }
+
+        return svgs;
+    } catch (e) {
+        return [];
     }
-
-    return svgs;
 };
 
 const main = async (): Promise<void> => {

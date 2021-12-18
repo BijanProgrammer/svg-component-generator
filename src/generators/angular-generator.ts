@@ -104,9 +104,9 @@ export const generateAngularComponents = async (
     const logoPromises = await generateComponents(
         path.join(outputDirectory, 'logos'),
         logos,
-        'icon',
-        'icons.module.ts',
-        'IconsModule'
+        'logo',
+        'logos.module.ts',
+        'LogosModule'
     );
 
     await Promise.all([...iconPromises, ...illustrationPromises, ...logoPromises]);
