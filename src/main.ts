@@ -9,7 +9,7 @@ import {printSeparator} from './utils/console.utils';
 
 const ASSETS_PATH = './assets/';
 const COMPONENTS_PATH = './components/';
-const PROJECT = 'css-animations';
+const PROJECT = 'flip';
 
 const ICONS_PATH = path.join(ASSETS_PATH, PROJECT, 'icons/');
 const ILLUSTRATIONS_PATH = path.join(ASSETS_PATH, PROJECT, 'illustrations/');
