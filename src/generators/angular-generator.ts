@@ -3,6 +3,7 @@ import * as path from 'path';
 
 import {Svg} from '../models/svg';
 import {titleCase} from '../utils/string.utils';
+import {AngularComponentInfo} from '../models/angular-component-info';
 
 const generateComponentContent = (prefix: string, name: string): string => {
     return `import {Component} from '@angular/core';
@@ -39,18 +40,12 @@ export class ${moduleName} {}
 `;
 };
 
-const generateComponents = async (
-    outputDirectory: string,
-    svgs: Svg[],
-    prefix: string,
-    moduleFilename: string,
-    moduleName: string
-): Promise<Promise<any>[]> => {
-    if (!svgs || !svgs.length) return [];
+const generateComponents = async (outputDirectory: string, info: AngularComponentInfo): Promise<Promise<any>[]> => {
+    if (!info.svgs || !info.svgs.length) return [];
 
     const promises: Promise<any>[] = [];
 
-    for (const svg of svgs) {
+    for (const svg of info.svgs) {
         console.log(`generating ${svg.name} files ...`);
 
         await fs.promises.mkdir(path.join(outputDirectory, svg.name), {recursive: true});
@@ -62,15 +57,15 @@ const generateComponents = async (
 
         const componentFilePromise = fs.promises.writeFile(
             path.join(outputDirectory, svg.name, `${svg.name}.component.ts`),
-            generateComponentContent(prefix, svg.name)
+            generateComponentContent(info.prefix, svg.name)
         );
 
         promises.push(svgFilePromise, componentFilePromise);
     }
 
     const moduleFilePromise = fs.promises.writeFile(
-        path.join(outputDirectory, moduleFilename),
-        generateModuleContent(moduleName, svgs)
+        path.join(outputDirectory, info.moduleFilename),
+        generateModuleContent(info.moduleName, info.svgs)
     );
 
     return [...promises, moduleFilePromise];
@@ -78,36 +73,15 @@ const generateComponents = async (
 
 export const generateAngularComponents = async (
     outputDirectory: string,
-    icons: Svg[],
-    illustrations: Svg[],
-    logos: Svg[]
+    infos: AngularComponentInfo[]
 ): Promise<void> => {
     console.log('removing components folder ...');
     await fs.promises.rmdir(outputDirectory, {recursive: true});
 
-    const iconPromises = await generateComponents(
-        path.join(outputDirectory, 'icons'),
-        icons,
-        'icon',
-        'icons.module.ts',
-        'IconsModule'
-    );
+    const promises: Promise<any>[] = [];
+    for (const info of infos) {
+        promises.push(...(await generateComponents(path.join(outputDirectory, info.folder), info)));
+    }
 
-    const illustrationPromises = await generateComponents(
-        path.join(outputDirectory, 'illustrations'),
-        illustrations,
-        'illustration',
-        'illustrations.module.ts',
-        'IllustrationsModule'
-    );
-
-    const logoPromises = await generateComponents(
-        path.join(outputDirectory, 'logos'),
-        logos,
-        'logo',
-        'logos.module.ts',
-        'LogosModule'
-    );
-
-    await Promise.all([...iconPromises, ...illustrationPromises, ...logoPromises]);
+    await Promise.all(promises);
 };
